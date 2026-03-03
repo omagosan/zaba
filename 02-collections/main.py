@@ -17,19 +17,39 @@ raw_data = [
 class Student:
     name: str
     os_cislo: str
+    predmet: str
+        
 
 def get_unique_subjects(data: list[tuple[str, str, str]]) -> set[str]:
     """
     Vrátí množinu unikátních předmětů.
     """
-    return set() # PLACEHOLDER
+
+    dvacet = []
+    for i in range(len(data)):
+        dvacet.append(data[i][2])
+    return set(dvacet)
 
 def group_students_by_subject(data: list[tuple[str, str, str]]) -> dict[str, list[Student]]:
     """
     Vrátí slovník, kde klíčem je předmět a hodnotou seznam studentů (instancí třídy Student),
     kteří jsou na předmět zapsáni.
     """
-    return {} # PLACEHOLDER
+
+    dict = {}
+    dvacet = []
+    for i in range(len(data)):
+        dvacet.append(data[i][2])
+    dvacet = list(set(dvacet))    
+    for i in range(len(dvacet)):
+        stud = []
+        for j in range(len(data)):
+            if dvacet[i] == data[j][2]:
+                stud.append(Student(str(data[j][0]), str(data[j][1]), str(data[j][2])))
+        dict2 = {str(dvacet[i]): stud}
+        dict.update(dict2)
+    
+    return dict
 
 def get_unique_students(data: list[tuple[str, str, str]]) -> set[Student]:
     """
@@ -37,7 +57,11 @@ def get_unique_students(data: list[tuple[str, str, str]]) -> set[Student]:
     Pozor: Data obsahují duplicity (jeden student může mít více předmětů).
     Cílem je získat množinu fyzických osob.
     """
-    return set() # PLACEHOLDER
+    a = []
+    for i in range(len(data)):
+        if data[i][0] not in a:
+            a.append(Student(str(data[i][0]), str(data[i][1]), str(data[i][2])))
+    return set(a)
 
 def main() -> None:
     print("--- ÚKOL 1: Unikátní předměty ---")
@@ -64,5 +88,14 @@ def main() -> None:
         print(f"\n[CHYBA] Očekáváno {expected_count} studentů, nalezeno {len(unique_students)}.")
         print("Tip: Funguje správně porovnávání instancí třídy Student v množině?")
 
+
+
+
+
+
+
+
 if __name__ == "__main__":
     main()
+        
+    
