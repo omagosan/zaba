@@ -19,7 +19,13 @@ def get_delay(period: int, spread_factor: float) -> int:
 
 
 def worker_tick(worker: Worker) -> None:
-    pass
+    if worker.timer > 0:
+        worker.timer -= 1
+        return
+    if len(worker.source) > 0:
+        zakaznik = worker.source.popleft()
+        worker.dest.append(zakaznik)
+        worker.timer = get_delay(worker.period, worker.spread_factor)
 
 
 def print_snapshot(time: int, queues: list[tuple[str, deque]]) -> None:
