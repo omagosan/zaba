@@ -32,7 +32,7 @@ def worker_tick(worker: Worker) -> None:
 
 def print_snapshot(time: int, queues: list[tuple[str, deque]]) -> None:
     print(end=f"{time//3600:02d}:{(time%3600)//60:02d}:{time%60:02d}\t")
-
+    #print(f"{time // 3600:02d}:{(time % 3600) // 60:02d}:{time % 60:02d}")
     queue_strings = []
 
     for name, queue in queues:

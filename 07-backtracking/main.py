@@ -11,7 +11,16 @@ class SudokuSolver:
 
         # list of lists (rows)
         loaded_rows: list[list[int]] = []
-        # TODO implement loading of the file
+        with open(file_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            for line in lines:
+                line = line.strip()
+                values = line.split(";")
+                integers = []
+                for value in values:
+                     integers.append(int(value))
+
+                loaded_rows.append(integers)
 
         # convert nested list to numpy array
         self.field = np.array(loaded_rows)

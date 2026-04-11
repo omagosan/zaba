@@ -6,11 +6,11 @@ from dataclasses import dataclass
 @dataclass
 class Worker:
     name: str
-    source: deque
-    dest: deque
-    period: int
-    spread_factor: float = 0.0
-    timer: int = 0
+    source: deque   #zdroj
+    dest: deque     #kam je posilam
+    period: int     #delay
+    spread_factor: float = 0.0  #random delay
+    timer: int = 0  #time left
 
 
 def get_delay(period: int, spread_factor: float) -> int:
@@ -22,6 +22,7 @@ def worker_tick(worker: Worker) -> None:
     if worker.timer > 0:
         worker.timer -= 1
         return
+
     if len(worker.source) > 0:
         zakaznik = worker.source.popleft()
         worker.dest.append(zakaznik)
@@ -29,7 +30,11 @@ def worker_tick(worker: Worker) -> None:
 
 
 def print_snapshot(time: int, queues: list[tuple[str, deque]]) -> None:
-    pass
+
+    for name, queue in queues:
+        print(end=f"{time // 3600:02d}:{(time % 3600) // 60:02d}:{time % 60:02d}") #zaokrouhlovani co neni zaokrouhlovani
+        print(f" - {name}: {len(queue)}")
+
 
 
 def main() -> None:
@@ -37,10 +42,18 @@ def main() -> None:
     people_in_the_city = deque(list(range(people_number)))
 
     # 1. Vytvoření front
-
+    door_q = people_in_the_city
+    gate_q = deque()
+    vege_q = deque()
+    final_q = deque()
+    gone_q = deque()
 
     # Seznam pro výpis (jméno, fronta)
     queues_to_observe = [
+        ("door", door_q),
+        ("gate", gate_q),
+        ("vege", vege_q),
+        ("final", final_q)
     ]
 
     # Parametry simulace (střední hodnoty časů v sekundách)
@@ -51,9 +64,20 @@ def main() -> None:
 
     # 2. Vytvoření pracovníků (Worker)
     # Worker(jméno, zdroj, cíl, perioda, spread_factor)
+    workers = [
+        Worker("Generator", people_in_the_city, door_q, day_m),
+        Worker("GateKeeper", door_q, vege_q, gate_m),
+        Worker("VegeKeeper", vege_q, final_q, vege_m),
+        Worker("Cashier", final_q, people_in_the_city, final_m),
+    ]
 
     # 3. Hlavní smyčka simulace
+    for second in range(7200):
+        for worker in workers:
+            worker_tick(worker)
 
+        if second % 120 == 0:
+            print_snapshot(second, queues_to_observe)
 
 if __name__ == "__main__":
     main()
